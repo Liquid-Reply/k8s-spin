@@ -21,9 +21,6 @@ jobs:
         include:
           - dockerfile: ./example-1-sidecars/Dockerfile
             image: ${{ env.REGISTRY }}/Liquid-Reply/spin-static-server
-
-    env:
-      IMG_NAME: ${{ github.repository }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
