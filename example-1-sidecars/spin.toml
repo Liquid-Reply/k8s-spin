@@ -1,0 +1,13 @@
+spin_manifest_version = "1"
+authors = ["Christoph Voigt <c.voigt@reply.de>"]
+description = "This Spin application serves static files"
+name = "static-server"
+trigger = { type = "http", base = "/" }
+version = "0.1.0"
+
+[[component]]
+source = "./spin_static_fs.wasm"
+id = "static-server"
+files = [{ source = "data", destination = "/" }]
+[component.trigger]
+route = "/..."
