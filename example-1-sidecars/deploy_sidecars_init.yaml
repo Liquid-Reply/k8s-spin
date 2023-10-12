@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: spin-static-server
+  name: spin-static-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spin-static-server
+  template:
+    metadata:
+      labels:
+        app: spin-static-server
+    spec:
+      runtimeClassName: wasmtime-spin
+      initContainers:
+        - name: get-contents
+          image: alpine/git
+          command:
+            - "sh"
+            - "-c"
+            - "git clone $(GIT_REPO) . "
+          workingDir: /var/lib/data
+          env:
+            - name: GIT_REPO
+              value: https://github.com/Liquid-Reply/k8s-spin
+          volumeMounts:
+            - mountPath: /var/lib/data
+              name: git
+      containers:
+      - image: ghcr.io/liquid-reply/k8s-spin/spin-static-server:main
+        name: spin-static-server
+        command: ["/"]
+        volumeMounts:
+        - mountPath: /data
+          name: git
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      volumes:
+        - emptyDir: {}
+          name: git
