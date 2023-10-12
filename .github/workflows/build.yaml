@@ -1,0 +1,67 @@
+name: Build and publish a Docker image
+on:
+  push:
+    branches:
+      - "main"
+    tags: [ '*' ]
+      # - 'v[0-9]+.[0-9]+.[0-9]+'
+  pull_request:
+    branches: [ main ]
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build:
+    name: Build & push docker image
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./example-1-sidecars/Dockerfile
+            image: ${{ env.REGISTRY }}/Liquid-Reply/spin-static-server
+
+    env:
+      IMG_NAME: ${{ github.repository }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Debug
+        run: |
+          echo "github.ref -> {{ github.ref }}"
+ 
+      - # Login into registry
+        name: Login to GitHub Container Registry
+        # if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - # Extract Docker metadata
+        name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.image }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - # Build and push to GHCR Registry
+        name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          file: ${{ matrix.dockerfile }}
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+            # ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            # ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            # ${{ steps.meta.outputs.tags }}
