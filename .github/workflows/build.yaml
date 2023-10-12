@@ -8,9 +8,6 @@ on:
   pull_request:
     branches: [ main ]
 
-env:
-  REGISTRY: ghcr.io
-
 jobs:
   build:
     name: Build & push docker image
@@ -20,7 +17,7 @@ jobs:
       matrix:
         include:
           - dockerfile: ./example-1-sidecars/Dockerfile
-            image: ${{ env.REGISTRY }}/Liquid-Reply/spin-static-server
+            image: ghcr.io/Liquid-Reply/spin-static-server
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -34,7 +31,7 @@ jobs:
         # if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -59,6 +56,6 @@ jobs:
           file: ${{ matrix.dockerfile }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
-            # ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            # ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            # ghcr.io/${{ env.IMAGE_NAME }}:latest
+            # ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
             # ${{ steps.meta.outputs.tags }}
