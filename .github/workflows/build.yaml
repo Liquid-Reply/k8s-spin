@@ -25,6 +25,11 @@ jobs:
       - name: Debug
         run: |
           echo "github.ref -> {{ github.ref }}"
+
+      - name: Get Spin Static Fileserver
+        run: |
+          mkdir ./bin
+          wget -O ./bin/spin_static_fs.wasm https://github.com/fermyon/spin-fileserver/releases/download/v0.0.3/spin_static_fs.wasm
  
       - # Login into registry
         name: Login to GitHub Container Registry
@@ -51,7 +56,7 @@ jobs:
         name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          # context: .
+          path: bin/
           push: ${{ github.event_name != 'pull_request' }}
           file: ${{ matrix.dockerfile }}
           labels: ${{ steps.meta.outputs.labels }}
