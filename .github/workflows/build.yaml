@@ -17,7 +17,7 @@ jobs:
       matrix:
         include:
           - dockerfile: ./example-1-sidecars/Dockerfile
-            image: ghcr.io/Liquid-Reply/spin-static-server
+            image: ghcr.io/Liquid-Reply/k8s-spin/spin-static-server
     steps:
       - name: Checkout
         uses: actions/checkout@v3
