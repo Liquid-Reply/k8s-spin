@@ -30,7 +30,7 @@ spec:
             - mountPath: /var/lib/data
               name: git
       containers:
-      - image: ghcr.io/liquid-reply/k8s-spin/spin-static-server:main
+      - image: ghcr.io/liquid-reply/k8s-spin/spin-static-server:latest
         name: spin-static-server
         command: ["/"]
         volumeMounts:
