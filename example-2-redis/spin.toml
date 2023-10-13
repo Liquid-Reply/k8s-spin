@@ -12,7 +12,6 @@ environment = { default = "kubernetes" }
 id = "env-explorer"
 source = "env_explorer.wasm"
 allowed_http_hosts = []
-files = [{ source = "redis", destination = "/redis" }]
 key_value_stores = ["default"]
 [component.config]
 environment = "{{ environment }}"
