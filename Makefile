@@ -10,8 +10,19 @@ example-1:
 sidecars: example-1
 
 .PHONY: example-2
-example-2:
+example-2: install-redis
 	kubectl apply -f example-2-redis/deploy_spin-redis.yaml
+
+.PHONY: install-redis
+install-redis:
+	helm repo add bitnami https://charts.bitnami.com/bitnami
+	helm repo update
+	helm upgrade --install --atomic \
+		--set-string global.redis.password="spin" \
+		--set-string architecture="standalone" \
+		example2-redis bitnami/redis
+
+
 
 .PHONY: redis
 redis: example-2

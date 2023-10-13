@@ -12,13 +12,9 @@ environment = { default = "kubernetes" }
 id = "env-explorer"
 source = "env_explorer.wasm"
 allowed_http_hosts = []
+files = [{ source = "redis", destination = "/redis" }]
 key_value_stores = ["default"]
 [component.config]
 environment = "{{ environment }}"
 [component.trigger]
 route = "/..."
-# route = "/internal/env-explorer/..."
-[component.build]
-command = "cargo build --target wasm32-wasi --release"
-workdir = "env-explorer"
-watch = ["src/**/*.rs", "Cargo.toml"]
