@@ -16,7 +16,7 @@ spec:
     spec:
       runtimeClassName: wasmtime-spin
       containers:
-      - image: ghcr.io/liquid-reply/k8s-spin/spin-redis:main
+      - image: ghcr.io/liquid-reply/k8s-spin/spin-redis:latest
         name: spin-env-explorer
         command: ["/"]
         resources:
