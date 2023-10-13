@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: spin-redis
+  name: spin-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spin-redis
+  template:
+    metadata:
+      labels:
+        app: spin-redis
+    spec:
+      runtimeClassName: wasmtime-spin
+      containers:
+      - image: voigt/spin-redis:latest
+        name: spin-env-explorer
+        command: ["/"]
+        env:
+          - name: SPIN_DIRECT_MOUNTS
+            value: "true"
+        volumeMounts:
+        - mountPath: /contents
+          name: git
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      - name: get-contents
+        image: alpine/git
+        command:
+          - "sh"
+          - "-c"
+          - "git clone $(GIT_REPO) . "
+        workingDir: /var/lib/data
+        env:
+          - name: GIT_REPO
+            value: https://github.com/mdn/beginner-html-site-scripted
+        volumeMounts:
+          - mountPath: /var/lib/data
+            name: git
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      volumes:
+        - emptyDir: {}
+          name: git
