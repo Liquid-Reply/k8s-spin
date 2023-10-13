@@ -16,15 +16,9 @@ spec:
     spec:
       runtimeClassName: wasmtime-spin
       containers:
-      - image: voigt/spin-redis:latest
+      - image: ghcr.io/liquid-reply/k8s-spin/spin-redis:main
         name: spin-env-explorer
         command: ["/"]
-        env:
-          - name: SPIN_DIRECT_MOUNTS
-            value: "true"
-        volumeMounts:
-        - mountPath: /contents
-          name: git
         resources:
           limits:
             cpu: 100m
@@ -32,26 +26,3 @@ spec:
           requests:
             cpu: 100m
             memory: 100Mi
-      - name: get-contents
-        image: alpine/git
-        command:
-          - "sh"
-          - "-c"
-          - "git clone $(GIT_REPO) . "
-        workingDir: /var/lib/data
-        env:
-          - name: GIT_REPO
-            value: https://github.com/mdn/beginner-html-site-scripted
-        volumeMounts:
-          - mountPath: /var/lib/data
-            name: git
-        resources:
-          limits:
-            cpu: 100m
-            memory: 100Mi
-          requests:
-            cpu: 100m
-            memory: 100Mi
-      volumes:
-        - emptyDir: {}
-          name: git

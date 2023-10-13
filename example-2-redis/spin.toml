@@ -1,34 +1,16 @@
 spin_version = "1"
-authors = ["Radu Matei <radu.matei@fermyon.com>"]
+authors = ["Christoph Voigt <c.voigt@reply.de>"]
 description = ""
-name = "kv-explorer"
+name = "env-explorer"
 trigger = { type = "http", base = "/" }
 version = "0.1.0"
 
-
-# [[component]]
-# id = "golang-explorer"
-# source = "explorer/main.wasm"
-# allowed_http_hosts = []
-# key_value_stores = ["default"]
-# [component.trigger]
-# route = "/internal/kv-explorer/..."
-# [component.build]
-# command = "tinygo build -target=wasi -gc=leaking -o main.wasm main.go"
-# workdir = "explorer"
-# watch = ["**/*.go", "go.mod"]
-
 [variables]
-environment = { default = "local" }
+environment = { default = "kubernetes" }
 
 [[component]]
 id = "env-explorer"
 source = "env_explorer.wasm"
-environment = { "API_URL" = "http://envvars:8080/api", "CA_URL" = "http://envvars:8080/api", "DA" = "http://envvars:8080/api" }
-files = [
-    # "./**/*" # Doesn't work in k8s
-    { source = "env-explorer", destination = "/env-explorer" },
-    ]
 allowed_http_hosts = []
 key_value_stores = ["default"]
 [component.config]
