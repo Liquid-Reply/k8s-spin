@@ -16,9 +16,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - dockerfile: ./example-1-sidecars/Dockerfile
+          - dockerfile: ./example-1-sidecars
             image: ghcr.io/liquid-reply/k8s-spin/spin-static-server
-          - dockerfile: ./example-2-redis/Dockerfile
+          - dockerfile: ./example-2-redis
             image: ghcr.io/liquid-reply/k8s-spin/spin-redis
     steps:
       - name: Checkout
@@ -53,9 +53,9 @@ jobs:
         name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          # context: .
+          context: ${{ matrix.dockerfile }}
           push: ${{ github.event_name != 'pull_request' }}
-          file: ${{ matrix.dockerfile }}
+          file: ${{ matrix.dockerfile }}/Dockerfile
           labels: ${{ steps.meta.outputs.labels }}
           tags: |
             ${{ matrix.image }}:latest
