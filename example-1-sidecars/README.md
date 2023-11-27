@@ -10,6 +10,12 @@ The sidecar container will continuously pull a git repository which contains an 
 
 ## Known-Issues
 
+### No dynamic content updates
+
 At this point in time the spin-static-file server performs a local copy of the served directory. As a consequence the server will not be able to detect or serve updated files.
 
 This behavior can be circumvented by using the `--direct-mounts` flag of `spin up` command. Unfortunately this is not yet possible using [containerd-shim-spin-v1](https://github.com/deislabs/containerd-wasm-shims/tree/main/containerd-shim-spin-v1).
+
+### No fetch at runtime
+
+It is important to add the wasm files to the Dockerfile; fetching the wasm files at runtime doesn't work, as the FS is read-only.
