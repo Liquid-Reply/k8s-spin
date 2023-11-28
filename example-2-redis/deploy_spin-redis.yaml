@@ -19,12 +19,6 @@ spec:
       - image: ghcr.io/liquid-reply/k8s-spin/spin-redis:latest
         name: spin-env-explorer
         command: ["/"]
-        env:
-        - name: RUNTIME_CONFIG_FILE
-          value: "/runtime_config.toml" # for testing purposes this file is part of the image
-        # volumeMounts:
-        # - name: redis-config
-        #   mountPath: /redis/runtime_config.toml
         resources:
           limits:
             cpu: 100m
@@ -32,17 +26,3 @@ spec:
           requests:
             cpu: 100m
             memory: 100Mi
-      # volumes:
-      #   - name: redis-config
-      #     configMap:
-      #       name: runtime-config
----
-apiVersion: v1
-data:
-  runtime_config.toml: |
-    [key_value_store.default]
-    type = "redis"
-    url = "redis://example-2-redis:6379"
-kind: ConfigMap
-metadata:
-  name: runtime-config

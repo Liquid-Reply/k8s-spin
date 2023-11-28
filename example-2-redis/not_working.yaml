@@ -1,0 +1,62 @@
+# Fails with:
+# $ kubectl describe po spin-redis-not-working-7bbf5644dc-6drbk
+# [...]
+# Events:
+#   Type     Reason     Age                    From               Message
+#   ----     ------     ----                   ----               -------
+#   Normal   Scheduled  4m15s                  default-scheduler  Successfully assigned default/spin-redis-not-working-7bbf5644dc-6drbk to k3d-wasm-cluster-agent-1
+#   Normal   Pulled     4m9s                   kubelet            Successfully pulled image "ghcr.io/liquid-reply/k8s-spin/spin-redis:latest" in 6.120041795s (6.120065003s including waiting)
+#   Normal   Pulled     4m7s                   kubelet            Successfully pulled image "ghcr.io/liquid-reply/k8s-spin/spin-redis:latest" in 671.808833ms (671.829042ms including waiting)
+#   Normal   Pulled     3m54s                  kubelet            Successfully pulled image "ghcr.io/liquid-reply/k8s-spin/spin-redis:latest" in 725.491792ms (725.5175ms including waiting)
+#   Normal   Pulled     3m25s                  kubelet            Successfully pulled image "ghcr.io/liquid-reply/k8s-spin/spin-redis:latest" in 713.214542ms (713.230167ms including waiting)
+#   Normal   Created    3m25s (x4 over 4m9s)   kubelet            Created container spin-env-explorer
+#   Warning  Failed     3m25s (x4 over 4m8s)   kubelet            Error: failed to create containerd task: failed to create shim task: Others("failed to receive. \"waiting for init ready\". BrokenChannel"): unknown
+#   Warning  BackOff    2m58s (x7 over 4m7s)   kubelet            Back-off restarting failed container spin-env-explorer in pod spin-redis-not-working-7bbf5644dc-6drbk_default(984d3623-a2cb-4760-b4e7-07caf59f617f)
+#   Normal   Pulling    2m43s (x5 over 4m15s)  kubelet            Pulling image "ghcr.io/liquid-reply/k8s-spin/spin-redis:latest"
+#   Normal   Pulled     2m42s                  kubelet            Successfully pulled image "ghcr.io/liquid-reply/k8s-spin/spin-redis:latest" in 690.948001ms (690.974042ms including waiting)
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: spin-redis-not-working
+  name: spin-redis-not-working
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spin-redis-not-working
+  template:
+    metadata:
+      labels:
+        app: spin-redis-not-working
+    spec:
+      runtimeClassName: wasmtime-spin
+      containers:
+      - image: ghcr.io/liquid-reply/k8s-spin/spin-redis:latest
+        name: spin-env-explorer
+        command: ["/"]
+        volumeMounts:
+        - name: redis-config
+          mountPath: /runtime-config.toml
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      volumes:
+        - name: redis-config
+          configMap:
+            name: runtime-config
+---
+apiVersion: v1
+data:
+  runtime-config.toml: |
+    [key_value_store.default]
+    type = "redis"
+    url = "redis://example-2-redis:6379"
+kind: ConfigMap
+metadata:
+  name: runtime-config
