@@ -33,6 +33,9 @@ spec:
     spec:
       runtimeClassName: wasmtime-spin
       containers:
+      # This image doesn't contain a runtime-config, but leads to different error
+      # - image: ghcr.io/liquid-reply/k8s-spin/spin-redis:noconf
+      # This image does contain a runtime-config
       - image: ghcr.io/liquid-reply/k8s-spin/spin-redis:latest
         name: spin-env-explorer
         command: ["/"]
