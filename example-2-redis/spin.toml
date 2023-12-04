@@ -7,7 +7,7 @@ name = "env-explorer"
 version = "0.1.0"
 
 [variables]
-environment = { default = "kubernetes" }
+config_value = { required = true }
 
 [[trigger.http]]
 route = "/..."
@@ -16,11 +16,6 @@ component = "env-explorer"
 [component.env-explorer]
 source = "./env_explorer.wasm"
 key_value_stores = ["default"]
-# files = [{ source = "config", destination = "/" }]
+environment = {"API_URL" = "http://envvars:8080/api", "HELLO" = "WORLD", "TEST_IS" = "Working" }
 [component.env-explorer.variables]
-environment = "{{ environment }}"
-#cool_var = "{{ cool_var }}"
-
-
-# [component.config]
-# environment = "{{ environment }}"
+config_value = "{{ config_value }}"

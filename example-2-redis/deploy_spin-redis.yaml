@@ -16,9 +16,12 @@ spec:
     spec:
       runtimeClassName: wasmtime-spin
       containers:
-      - image: ghcr.io/liquid-reply/k8s-spin/spin-redis:latest
+      - image: ghcr.io/liquid-reply/k8s-spin/spin-redis:test
         name: spin-env-explorer
         command: ["/"]
+        env:
+          - name: SPIN_VARIABLE_CONFIG_VALUE
+            value: "kubernetes"
         resources:
           limits:
             cpu: 100m
