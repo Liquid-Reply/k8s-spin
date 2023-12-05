@@ -7,7 +7,7 @@ name = "env-explorer"
 version = "0.1.0"
 
 [variables]
-config_value = { required = true }
+config_value = { default = "spin_local" }
 
 [[trigger.http]]
 route = "/..."

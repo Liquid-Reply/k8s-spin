@@ -22,7 +22,6 @@ spec:
         - containerPort: 6379
           name: redis
           protocol: TCP
-        resources: {}
 ---
 apiVersion: v1
 kind: Service
