@@ -2,10 +2,40 @@
 
 ## Scenario
 
-This scenario will demonstrate deployment and configuration a Spin application connecting to a Redis database.
+This scenario will demonstrate deployment and configuration of a Spin application connecting to a Redis database via [Dynamic Application Configuration](https://developer.fermyon.com/spin/v2/dynamic-configuration).
 
-## Known-Issues
+## Usage
 
-At this point in time it is not possible to handover a `runtime_config.toml` to [containerd-shim-spin-v1](https://github.com/deislabs/containerd-wasm-shims/tree/main/containerd-shim-spin-v1). This means that the Spin application will not honor the `RUNTIME_CONFIG_FILE` environment variable and always use a local KV instead.
+Deploy a simple Redis instance:
 
-Therefore this scenario is not yet fully functional.
+```
+$ kubectl apply -f redis.yaml
+```
+
+Add data to redis:
+
+```
+$ redis-cli                                         
+127.0.0.1:6379> SET hello "World"
+OK
+127.0.0.1:6379> SET spin "Rocks!!"
+OK
+127.0.0.1:6379> GET hello
+"World"
+127.0.0.1:6379> get spin
+"Rocks!!"
+```
+
+Deploy the Spin application:
+
+```
+$ kubectl apply -f deploy_spin-redis.yaml
+```
+
+Access the Spin application:
+
+```
+$ kubectl port-forward deployment/spin-redis 8000:80
+```
+
+And access `localhost:8000` in your browser.
