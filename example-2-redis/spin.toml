@@ -17,5 +17,6 @@ component = "env-explorer"
 source = "./env_explorer.wasm"
 key_value_stores = ["default"]
 environment = {"API_URL" = "http://envvars:8080/api", "HELLO" = "WORLD", "TEST_IS" = "Working" }
+files = ["spin.toml", "runtime-config.toml", "env_explorer.wasm"]
 [component.env-explorer.variables]
 config_value = "{{ config_value }}"
